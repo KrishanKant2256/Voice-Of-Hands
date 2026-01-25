@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket Test</title>
+    <style>
+        video {
+            width: 400px;
+            border: 2px solid black;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px;
+        }
+
+        #log {
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>WebSocket + Camera Test</h2>
+
+    <button onclick="connectWS()">Connect WebSocket</button>
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="sendFrame()">Send Frame</button>
+    <button onclick="stopCamera()">Stop Camera</button>
+
+    <br><br>
+
+    <video id="video" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <h3>Logs</h3>
+    <div id="log"></div>
+
+    <script>
+        let socket = null;
+        let videoStream = null;
+
+        function log(msg) {
+            document.getElementById("log").innerText += msg + "\n";
+        }
+
+        /* ------------------ WEBSOCKET ------------------ */
+
+        function connectWS() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                log("⚠️ WebSocket already connected");
+                return;
+            }
+
+            socket = new WebSocket("ws://127.0.0.1:8000/ws/gesture/");
+
+            socket.onopen = () => {
+                log("✅ WebSocket connected");
+            };
+
+            socket.onmessage = (event) => {
+                log("📩 " + event.data);
+            };
+
+            socket.onerror = (error) => {
+                log("❌ WebSocket error");
+                console.error(error);
+            };
+
+            socket.onclose = () => {
+                log("❌ WebSocket closed");
+            };
+        }
+
+        /* ------------------ CAMERA ------------------ */
+
+        function startCamera() {
+            if (videoStream) {
+                log("⚠️ Camera already running");
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    videoStream = stream;
+                    document.getElementById("video").srcObject = stream;
+                    log("📷 Camera started");
+                })
+                .catch(err => {
+                    log("❌ Camera error: " + err);
+                });
+        }
+
+        function stopCamera() {
+            if (!videoStream) {
+                log("⚠️ Camera not running");
+                return;
+            }
+
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+            document.getElementById("video").srcObject = null;
+            log("🛑 Camera stopped");
+        }
+
+        /* ------------------ SEND FRAME ------------------ */
+
+        function sendFrame() {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                log("❌ WebSocket not connected");
+                return;
+            }
+
+            if (!videoStream) {
+                log("❌ Camera not started");
+                return;
+            }
+
+            const video = document.getElementById("video");
+            const canvas = document.getElementById("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0);
+
+            const frame = canvas.toDataURL("image/jpeg");
+
+            socket.send(JSON.stringify({
+                frame: frame
+            }));
+
+            log("📤 Frame sent");
+        }
+    </script>
+
+</body>
+
+</html>

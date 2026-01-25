@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.app {
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    opacity: 0.85;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+video {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.result {
+    margin-top: 15px;
+}
+
+.sign {
+    font-size: 64px;
+    font-weight: bold;
+}
+
+.confidence {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    background: white;
+    color: #764ba2;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.app-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 5px;
+
+    background: linear-gradient(90deg,
+            #4facfe,
+            #00f2fe,
+            #38bdf8);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.app-title {
+    text-shadow: 0 0 20px rgba(79, 172, 254, 0.35);
+}
